@@ -41,6 +41,49 @@ async def join(ctx):
     vc.play(discord.FFmpegPCMAudio(STREAM_URL), after=lambda e: print(f"Stream ended: {e}"))
     await ctx.send(f"Now playing the radio in {channel.name}!")
 
+# Define a volume command.
+@bot.command()
+async def volume(ctx, volume: int):
+    """Adjust the radio volume between 1 and 100."""
+    # Handle if bot isn't in a voice channel.
+    if not ctx.voice_client:
+        await ctx.send("I'm not in a voice channel!")
+        return
+
+    # Check if requested volume is valid.
+    if 1 <= volume <= 100:
+        # Convert from 0 - 100 to 0 - 2 and set volume.
+        ctx.voice_client.source.volume = volume / 50
+        await ctx.send(f"Volume set to {volume}%.")
+    else:
+        await ctx.send("The requested volume must be a number between 1 and 100.")
+
+# Define a mute command.
+@bot.command()
+async def mute(ctx):
+    """Mutes the bot's microphone."""
+    # Handle if bot isn't in a voice channel.
+    if not ctx.voice_client:
+        await ctx.send("Hey, I'm not in a voice channel!")
+        return
+
+    # Mute the bot.
+    ctx.voice_client.self_mute = True
+    await ctx.send("I'm now muted.")
+
+# Define an unmute command.
+@bot.command()
+async def unmute(ctx):
+    """Unmutes the bot's microphone."""
+    # Handle if bot isn't in a voice channel.
+    if not ctx.voice_client:
+        await ctx.send("Hey, I'm not in a voice channel!")
+        return
+
+    # Unmute the bot.
+    ctx.voice_client.self_mute = False
+    await ctx.send("I'm now unmuted. Enjoy the music!")
+
 # Define a leave command.
 @bot.command()
 async def leave(ctx):
