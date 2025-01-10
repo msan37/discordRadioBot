@@ -38,7 +38,7 @@ async def join(ctx):
     vc = await channel.connect()
 
     # Start streaming the radio. Log if the remote stream ends (normally shouldn't happen).
-    vc.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(STREAM_URL, after=lambda e: print(f"Stream ended: {e}"))))
+    vc.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(STREAM_URL)), after=lambda e: print(f"Stream ended: {e}"))
     await ctx.send(f"Now playing the radio in {channel.name}!")
 
 # Define a volume command.
