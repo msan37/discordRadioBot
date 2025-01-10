@@ -5,6 +5,7 @@ import asyncio
 import os
 
 intents = discord.Intents.default()
+intents.message_content = True
 bot = commands.Bot(command_prefix="radio!", intents=intents)
 
 # Define radio stream URL from environment variable.
