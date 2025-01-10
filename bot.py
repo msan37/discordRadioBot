@@ -26,8 +26,8 @@ async def on_ready():
 @bot.command()
 async def join(ctx):
     """Joins the voice channel you're in."""
-  # Handle if user isn't in a voice channel.  
-  if not ctx.author.voice:
+    # Handle if user isn't in a voice channel.  
+    if not ctx.author.voice:
         await ctx.send("I can only join a voice channel if you're already in one. Please join a voice channel then try again.")
         return
 
