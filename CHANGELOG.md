@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 01/09/2025
+
 ### Added
 - bot.py, a Python-based Discord bot which can join voice channels and broadcast an internet radio stream.
 - Dockerfile, to create a Docker container that runs the Discord bot.
@@ -14,3 +16,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - VERSION, a file to keep track of the current version in sync with this changelog.
 - CHANGELOG.md, this file.
 - LICENSE, a license.
+- Created Github workflow which creates a Docker image.
