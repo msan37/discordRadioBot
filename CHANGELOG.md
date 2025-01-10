@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 01/09/2025
+
+### Fixed
+- Indentation on line 30 in bot.py was incorrect, causing an error.
+
 ## [1.2.0] - 01/09/2025
 
 ### Fixed
