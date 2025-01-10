@@ -2,6 +2,7 @@
 import discord
 from discord.ext import commands
 import asyncio
+import os
 
 intents = discord.Intents.default()
 bot = commands.Bot(command_prefix="radio!", intents=intents)
