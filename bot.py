@@ -55,6 +55,7 @@ async def volume(ctx, volume: int):
         # Convert from 0 - 100 to 0 - 2 and set volume.
         ctx.voice_client.source.volume = volume / 50
         await ctx.send(f"Volume set to {volume}%.")
+        print(f"Volume changed to: {ctx.voice_client.source.volume}") # Debugging
     else:
         await ctx.send("The requested volume must be a number between 1 and 100.")
 
@@ -70,6 +71,7 @@ async def mute(ctx):
     # Mute the bot.
     ctx.voice_client.self_mute = True
     await ctx.send("I'm now muted.")
+    print("Bot muted: ", ctx.voice_client.self_mute)  # Debugging
 
 # Define an unmute command.
 @bot.command()
@@ -83,6 +85,7 @@ async def unmute(ctx):
     # Unmute the bot.
     ctx.voice_client.self_mute = False
     await ctx.send("I'm now unmuted. Enjoy the music!")
+    print("Bot unmuted: ", ctx.voice_client.self_mute)  # Debugging
 
 # Define a leave command.
 @bot.command()
