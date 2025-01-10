@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 01/09/2025
+
+### Fixed
+- Docker action was still incorrect as the image path would have capitalization which is not allowed. Fixed by using `toLowerCase`.
+
 ## [1.1.0] - 01/09/2025
 
 ### Fixed
