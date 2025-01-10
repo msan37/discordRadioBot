@@ -53,39 +53,51 @@ async def volume(ctx, volume: int):
     # Check if requested volume is valid.
     if 1 <= volume <= 100:
         # Convert from 0 - 100 to 0 - 2 and set volume.
-        ctx.voice_client.source.volume = volume / 50
-        await ctx.send(f"Volume set to {volume}%.")
-        print(f"Volume changed to: {ctx.voice_client.source.volume}") # Debugging
+        new_volume = volume / 50
+        if ctx.voice_client.is_playing():
+            ctx.voice_client.source.volume = new_volume
+            await ctx.send(f"Volume set to {volume}%.")
+            print(f"Volume changed to: {ctx.voice_client.source.volume}")  # Debugging line
+        else:
+            await ctx.send("Hmm...something is not right. I don't think I'm playing any audio right now, so I can't change the volume.")
     else:
         await ctx.send("The requested volume must be a number between 1 and 100.")
 
-# Define a mute command.
-@bot.command()
-async def mute(ctx):
-    """Mutes the bot's microphone."""
+# Define a pause command.
+@bot.command(aliases=['mute'])
+async def pause(ctx):
+    """Pauses the radio stream."""
     # Handle if bot isn't in a voice channel.
     if not ctx.voice_client:
         await ctx.send("Hey, I'm not in a voice channel!")
         return
 
-    # Mute the bot.
-    ctx.voice_client.self_mute = True
-    await ctx.send("I'm now muted.")
-    print("Bot muted: ", ctx.voice_client.self_mute)  # Debugging
+    # Check that the radio is unpaused.
+    if not ctx.voice_client.is_paused():
+        # Pause the audio.
+        ctx.voice_client.pause()
+        await ctx.send("The radio is now pasued.")
+        print("Radio paused")  # Debugging line
+    else:
+        await ctx.send("The radio is already paused. If you're still hearing audio, cry.")
 
-# Define an unmute command.
-@bot.command()
-async def unmute(ctx):
-    """Unmutes the bot's microphone."""
+# Define an unpause command.
+@bot.command(aliases=['unmute'])
+async def unpause(ctx):
+    """Unpauses the radio stream."""
     # Handle if bot isn't in a voice channel.
     if not ctx.voice_client:
         await ctx.send("Hey, I'm not in a voice channel!")
         return
 
-    # Unmute the bot.
-    ctx.voice_client.self_mute = False
-    await ctx.send("I'm now unmuted. Enjoy the music!")
-    print("Bot unmuted: ", ctx.voice_client.self_mute)  # Debugging
+    # Check that the radio was already paused.
+    if ctx.voice_client.is_paused():
+        # Resume audio playback if the bot was paused.
+        ctx.voice_client.resume()
+        await ctx.send("The radio is now unpaused. Enjoy the music!.")
+        print("Bot resumed")  # Debugging line
+    else:
+        await ctx.send("The radio is already unpaused. If you can't hear anything, try changing the volume or making me rejoin.")
 
 # Define a leave command.
 @bot.command()
