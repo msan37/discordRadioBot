@@ -38,7 +38,7 @@ async def join(ctx):
     vc = await channel.connect()
 
     # Start streaming the radio. Log if the remote stream ends (normally shouldn't happen).
-    vc.play(discord.FFmpegPCMAudio(STREAM_URL), after=lambda e: print(f"Stream ended: {e}"))
+    vc.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(STREAM_URL), after=lambda e: print(f"Stream ended: {e}")))
     await ctx.send(f"Now playing the radio in {channel.name}!")
 
 # Define a volume command.
@@ -52,10 +52,10 @@ async def volume(ctx, volume: int):
 
     # Check if requested volume is valid.
     if 1 <= volume <= 100:
-        # Convert from 0 - 100 to 0 - 2 and set volume.
-        new_volume = volume / 50
+        # Check we are currently playing audio.
         if ctx.voice_client.is_playing():
-            ctx.voice_client.source.volume = new_volume
+            # Set the volume and divide by 100 so that the maximum is 1.0, or 100%.
+            ctx.voice_client.source.volume = volume / 100
             await ctx.send(f"Volume set to {volume}%.")
             print(f"Volume changed to: {ctx.voice_client.source.volume}")  # Debugging line
         else:
