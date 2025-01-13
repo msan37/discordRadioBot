@@ -150,7 +150,7 @@ async def defaultvolume(ctx, volume: int):
         # Call the save settings function to persist the new setting.
         save_settings(settings)
         await ctx.send(f"The default volume is now {volume}%.")
-        print(f"Set the default volume to {settings["default_volume"]}.")
+        print(f"Set the default volume to {settings['default_volume']}.")
     else:
         await ctx.send("The default volume must be a number between 1 and 100.")
 
