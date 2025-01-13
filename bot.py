@@ -46,9 +46,15 @@ async def start_radio(ctx, useDefaultVolume):
     vc = await channel.connect()
 
     # Calculate the corrected volume based on the default and the offset.
+    # If we want to start the radio with the default volume...
     if useDefaultVolume == True:
+        # Readjust the current volume to match the default.
+        settings["current_volume"] = settings["default_volume"]
+        save_settings(settings)
+        # Set the actual volume to be the default adjusted by the offset.
         actual_volume = settings["default_volume"] * settings["volume_offset"]
     else:
+        # If we don't want the default, just readjust the current volume against the offset.
         actual_volume = settings["current_volume"] * settings["volume_offset"]
     
     # Start streaming the radio. Log if the remote stream ends (normally shouldn't happen).
