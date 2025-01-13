@@ -60,6 +60,17 @@ YYYY-MM-DD HH:MM:SS INFO     discord.client logging in using static token
 YYYY-MM-DD HH:MM:SS INFO     discord.gateway Shard ID None has connected to Gateway (Session ID: blahblahblahblahblahblahblahblah).
 Logged in as A Discord Bot's Name
 ```
+## Local
+As long as you have Python installed on your computer, you should be able to simpylk download the bot.py file and run it. The file expects two environment variables which you can set before running the code.
+> [!CAUTION]
+> Setting the environment variables in the way shown below is not the "proper" way to handle sensitive information like a bot token.
+
+### Linux/macOS
+`STREAM_URL="yourStreamsURL" BOT_TOKEN="secret" python bot.py`
+### Windows
+`set STREAM_URL="yourStreamsURL" && set BOT_TOKEN="secret" && python bot.py
+`
+
 ---
 # Usage
 Let's see how to invite the bot to our server and what commands we can use.
