@@ -16,9 +16,9 @@ STREAM_URL = os.getenv("STREAM_URL")
 # Define Bot Token from environment variable.
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 # Define a default volume.
-DEFAULT_VOLUME = os.getenv("DEFAULT_VOLUME", 1.0)
+DEFAULT_VOLUME = float(os.getenv("DEFAULT_VOLUME", 1.0))
 # Define a default volume offset.
-DEFAULT_VOLUME_OFFSET = os.getenv("DEFAULT_VOLUME_OFFSET", 1.0)
+DEFAULT_VOLUME_OFFSET = float(os.getenv("DEFAULT_VOLUME_OFFSET", 1.0))
 # Define a settings file to keep track of variables.
 SETTINGS_FILE = "settings.json"
 
