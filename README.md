@@ -1,4 +1,4 @@
-Welcome to discordRadioBot! This is a Python-based Discord bot that can play an internet radio stream! It was made specifically to compliment an AzuraCast installation but should work with any internet radio stream.
+Welcome to discordRadioBot! This is a Python-based Discord bot that can play an internet radio stream! It was made specifically to compliment an [AzuraCast](https://www.azuracast.com/) installation but should work with any internet radio stream.
 
 ---
 # Deployment
