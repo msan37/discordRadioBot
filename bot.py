@@ -112,7 +112,7 @@ async def volume(ctx, volume: int):
             # Call the save settings function to persist the new setting.
             save_settings(settings)
             # Actually change the current output volume.
-            ctx.voice_client.source.volume = volume / 100
+            ctx.voice_client.source.volume = (volume / 100) * settings["volume_offset"]
             await ctx.send(f"Volume set to {volume}%.")
             print(f"Volume changed to: {ctx.voice_client.source.volume}")  # Debugging line
         else:
