@@ -7,6 +7,7 @@ import os
 
 intents = discord.Intents.default()
 intents.message_content = True
+intents.members = True
 bot = commands.Bot(command_prefix="radio!", intents=intents)
 # --------------------
 # Variable Setup
@@ -213,9 +214,17 @@ async def leave(ctx):
 @bot.event
 async def on_voice_state_update(member, before, after):
     """Auto disconnect if no one is left in the channel."""
-    if member == bot.user and after.channel is None and before.channel is not None:
-        if before.channel.guild.voice_client:
-            await before.channel.guild.voice_client.disconnect()
+    # Stop if a bot triggered the event.
+    if member.bot:
+        return
+    # Find an instance of ourself where we are connected to the voice channel where this event occured.
+    bot_client_info = discord.utils.get(bot.voice_clients, guild=member.guild)
+    # If we are in a voice channel and that channel matches the one that was left by the event-triggering user...
+    if bot_client_info and before.channel == bot_client_info.channel:
+        #...and we are the last one in the voice channel...
+        if len(bot_client_info.channel.members) == 1:
+            # ...then leave.
+            await bot_client_info.disconnect()
 
 # Run the bot!
 bot.run(BOT_TOKEN)
