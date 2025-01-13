@@ -32,7 +32,7 @@ if not BOT_TOKEN:
 # --------------------
 # Define some Functions
 # --------------------
-def start_radio(useDefaultVolume):
+async def start_radio(ctx, useDefaultVolume):
     # Handle if user isn't in a voice channel.  
     if not ctx.author.voice:
         await ctx.send("I can only join a voice channel if you're already in one. Please join a voice channel then try again.")
@@ -43,7 +43,7 @@ def start_radio(useDefaultVolume):
     vc = await channel.connect()
 
     # Calculate the corrected volume based on the default and the offset.
-    if useDefaultVolume == true:
+    if useDefaultVolume == True:
         actual_volume = settings["default_volume"] * settings["volume_offset"]
     else:
         actual_volume = settings["current_volume"] * settings["volume_offset"]
@@ -86,7 +86,7 @@ async def on_ready():
 @bot.command()
 async def join(ctx):
     """Joins the voice channel you're in."""
-    start_radio(true)
+    start_radio(ctx, True)
 
 # --------------------
 # Volume Shenanigans
@@ -130,7 +130,7 @@ async def volumeoffset(ctx, offset: int):
         # If we are streaming audio...
         if ctx.voice_client:
             # Restart the stream without using the default volume.
-            start_radio(false)
+            start_radio(ctx, False)
             await ctx.send(f"The volume offset is now {offset}%. Restarted the radio to apply the change.")
             print(f"Volume offset changed to: {settings['volume_offset']}%. Restarted stream to apply change.")
         else:
