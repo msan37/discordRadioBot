@@ -86,7 +86,7 @@ async def on_ready():
 @bot.command()
 async def join(ctx):
     """Joins the voice channel you're in."""
-    start_radio(ctx, True)
+    await start_radio(ctx, True)
 
 # --------------------
 # Volume Shenanigans
@@ -130,7 +130,7 @@ async def volumeoffset(ctx, offset: int):
         # If we are streaming audio...
         if ctx.voice_client:
             # Restart the stream without using the default volume.
-            start_radio(ctx, False)
+            await start_radio(ctx, False)
             await ctx.send(f"The volume offset is now {offset}%. Restarted the radio to apply the change.")
             print(f"Volume offset changed to: {settings['volume_offset']}%. Restarted stream to apply change.")
         else:
