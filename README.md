@@ -7,7 +7,7 @@ The intended deployment method is to use a Docker container. You can alternative
 Before using either Docker method, you will need to create a file for your environment variables. Let's create a file called `.env` and then paste the following contents:
 ```env
 BOT_TOKEN=
-OVERWRITE_STREAMS=
+OVERWRITE_STATIONS=
 ```
 For the BOT_TOKEN, just enter your Discord bot's token (Client Secret in the OAuth section).
 The OVERWRITE_STREAMS variable is used to specify a list of stations your bot can switch between. It is in JSON format. You need ot specify a station name followed by its URL.
@@ -15,11 +15,7 @@ The OVERWRITE_STREAMS variable is used to specify a list of stations your bot ca
 > The `OVERWRITE_STREAMS` environment variable is optional and will overwrite all streams the bot knows. It will need to be used at least once to initialize the bot. If you're not using persistent storage then you'll need to leave it set so that it can properly re-initialize its internal list of stations upon reset.
 ```env
 BOT_TOKEN=secretsecretsecretsecretsecretsecretsecret
-OVERWRITE_STREAMS= >
-  {
-    "Station 1": "https://yourdomain.tld/listen/station1/radio.mp3",
-    "Station 2": "https://yourdomain.tld/listen/station2/listen.mp3"
-  }
+OVERWRITE_STATIONS="{\"Station 1\": \"https://yourdomain.tld/listen/station1/radio.mp3\", \"Station 2\": \"https://yourdomain.tld/listen/station2/listen.mp3\"}"
 ```
 
 ### Using Docker Compose
@@ -48,11 +44,7 @@ services:
     restart: unless-stopped
     environment:
       BOT_TOKEN: ${BOT_TOKEN}
-      OVERWRITE_STREAMS: >
-        {
-          "Station 1": "https://yourdomain.tld/listen/station1/radio.mp3",
-          "Station 2": "https://yourdomain.tld/listen/station2/listen.mp3"
-        }
+      OVERWRITE_STATIONS: "{\"Station 1\": \"https://yourdomain.tld/listen/station1/radio.mp3\", \"Station 2\": \"https://yourdomain.tld/listen/station2/listen.mp3\"}"
       DEFAULT_VOLUME: 0.25
       DEFAULT_VOLUME_OFFSET: 0.10
 ```
@@ -75,6 +67,9 @@ Logged in as A Discord Bot's Name
 As long as you have Python installed on your computer, you should be able to simply download the bot.py file and run it. The file expects two environment variables which you can set before running the code.
 > [!CAUTION]
 > Setting the environment variables in the way shown below is not the "proper" way to handle sensitive information like a bot token.
+
+> [!NOTE]
+> I have not checked the JSON syntax when running locally. These *might* work but if they don't then let me know so I can fix these.
 ### Linux/macOS
 <code>OVERWRITE_STREAMS=`{"Station 1":"https://yourdomain.tld/listen/station1/radio.mp3","Station 2":"https://yourdomain.tld/listen/station2/listen.mp3"}` BOT_TOKEN="secret" python bot.py</code>
 ### Windows
