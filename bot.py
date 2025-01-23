@@ -54,21 +54,21 @@ async def start_radio(ctx, useDefaultVolume, station_name=None):
         station_name_lower = station_name.lower()
         
         # Loop through "stations" list to find the station.
-        found_station = False
+        found_station = None
         for station in settings["stations"]:
             # If the current station we're looping through matches the requested station name...
             if station.lower() == station_name_lower:
                 # Set found_station to true...
-                found_station = True
+                found_station = station
                 # and exit the loop.
                 break
 
         # If found_station is true...
         if found_station:
             # Set the stream_url to match the station's URL.
-            stream_url = settings["stations"][station_name]
+            stream_url = settings["stations"][found_station]
             # Update the last_station to match.
-            settings["last_station"] = station_name
+            settings["last_station"] = found_)station
             # Save our change to last_station.
             save_settings(settings)
         # If the name can't be found, let the user know and stop the function.
