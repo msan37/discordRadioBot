@@ -68,7 +68,7 @@ async def start_radio(ctx, useDefaultVolume, station_name=None):
         # If the name can't be found, let the user know.
         else:
             await ctx.send(f"Sorry, I've never heard of `{station_name}`.")
-            return
+            break
     # If no station name was provided...
     else:
         # And the last_station exists and can be found in the "stations" list
@@ -79,6 +79,7 @@ async def start_radio(ctx, useDefaultVolume, station_name=None):
         else:
             # Let the user know. This might be indicative of no stations being set yet.
             await ctx.send("Uh oh. You didn't specify a station and I can't recall the last station I played. This normally shouldn't happen, but just try specifying a station for me to play.")
+            break
 
     # Start streaming the radio. Log if the remote stream ends (normally shouldn't happen).
     vc.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(stream_url), volume=actual_volume), after=lambda e: print(f"Stream ended: {e}"))
