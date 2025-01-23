@@ -151,7 +151,7 @@ async def join(ctx):
 
 # Define a generic switch command
 @bot.command(aliases=['play','station'])
-async def switch(ctx, station_name: str = None)
+async def switch(ctx, station_name: str = None):
     """Switch to the specified radio station."""
     await start_radio(ctx, True, station_name)
 
