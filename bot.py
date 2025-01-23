@@ -108,7 +108,7 @@ def load_settings():
         try:
             stations = json.loads(OVERWRITE_STATIONS)
             # If this new variable contains a stations list like we expect...
-            if isInstance(stations, dict):
+            if isinstance(stations, dict):
                 # Overwrite "stations" in settings with the new values.
                 settings["stations"] = stations
                 # Set last_station to the first station.
