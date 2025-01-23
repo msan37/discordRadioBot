@@ -36,13 +36,6 @@ async def start_radio(ctx, useDefaultVolume, station_name=None):
         await ctx.send("I can only join a voice channel if you're already in one. Please join a voice channel then try again.")
         return
 
-    # If we are already in a voice channel, disconnect.
-    if ctx.voice_client:
-        await ctx.voice_client.disconnect()
-    # Join the command issuer's channel.
-    channel = ctx.author.voice.channel
-    vc = await channel.connect()
-
     # Calculate the corrected volume based on the default and the offset.
     # If we want to start the radio with the default volume...
     if useDefaultVolume == True:
@@ -57,18 +50,31 @@ async def start_radio(ctx, useDefaultVolume, station_name=None):
     
     # If a station name was provided...
     if station_name:
-        # And that name can be found in the "stations" list...
-        if station_name in settings["stations"]:
+        # Convert it to lowercase.
+        station_name_lower = station_name.lower()
+        
+        # Loop through "stations" list to find the station.
+        found_station = False
+        for station in settings["stations"]:
+            # If the current station we're looping through matches the requested station name...
+            if station.lower() == station_name_lower:
+                # Set found_station to true...
+                found_station = True
+                # and exit the loop.
+                break
+
+        # If found_station is true...
+        if found_station:
             # Set the stream_url to match the station's URL.
             stream_url = settings["stations"][station_name]
             # Update the last_station to match.
             settings["last_station"] = station_name
             # Save our change to last_station.
             save_settings(settings)
-        # If the name can't be found, let the user know.
+        # If the name can't be found, let the user know and stop the function.
         else:
             await ctx.send(f"Sorry, I've never heard of `{station_name}`.")
-            break
+            return
     # If no station name was provided...
     else:
         # And the last_station exists and can be found in the "stations" list
@@ -79,8 +85,15 @@ async def start_radio(ctx, useDefaultVolume, station_name=None):
         else:
             # Let the user know. This might be indicative of no stations being set yet.
             await ctx.send("Uh oh. You didn't specify a station and I can't recall the last station I played. This normally shouldn't happen, but just try specifying a station for me to play.")
-            break
+            return
 
+    # If we are already in a voice channel, disconnect.
+    if ctx.voice_client:
+        await ctx.voice_client.disconnect()
+    # Join the command issuer's channel.
+    channel = ctx.author.voice.channel
+    vc = await channel.connect()
+    
     # Start streaming the radio. Log if the remote stream ends (normally shouldn't happen).
     vc.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(stream_url), volume=actual_volume), after=lambda e: print(f"Stream ended: {e}"))
     await ctx.send(f"Now playing the radio in {channel.name}!")
