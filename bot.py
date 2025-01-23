@@ -8,11 +8,12 @@ import os
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix="radio!", intents=intents)
+
 # --------------------
 # Variable Setup
 # --------------------
-# Define radio stream URL from environment variable.
-STREAM_URL = os.getenv("STREAM_URL")
+# Define OVERWRITE_STATIONS variable from environment variable.
+OVERWRITE_STATIONS = os.getenv("OVERWRITE_STATIONS")
 # Define Bot Token from environment variable.
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 # Define a default volume.
@@ -20,19 +21,16 @@ DEFAULT_VOLUME = float(os.getenv("DEFAULT_VOLUME", 1.0))
 # Define a default volume offset.
 DEFAULT_VOLUME_OFFSET = float(os.getenv("DEFAULT_VOLUME_OFFSET", 1.0))
 # Define a settings file to keep track of variables.
-SETTINGS_FILE = "settings.json"
-
+settings_file = "settings.json"
 
 # Handle missing environment variables that are required.
-if not STREAM_URL:
-    raise ValueError("STREAM_URL environment variable is not set!")
 if not BOT_TOKEN:
     raise ValueError("BOT_TOKEN environment variable is not set!")
 
 # --------------------
 # Define some Functions
 # --------------------
-async def start_radio(ctx, useDefaultVolume):
+async def start_radio(ctx, useDefaultVolume, station_name=None):
     # Handle if user isn't in a voice channel.  
     if not ctx.author.voice:
         await ctx.send("I can only join a voice channel if you're already in one. Please join a voice channel then try again.")
@@ -57,28 +55,82 @@ async def start_radio(ctx, useDefaultVolume):
         # If we don't want the default, just readjust the current volume against the offset.
         actual_volume = settings["current_volume"] * settings["volume_offset"]
     
+    # If a station name was provided...
+    if station_name:
+        # And that name can be found in the "stations" list...
+        if station_name in settings["stations"]:
+            # Set the stream_url to match the station's URL.
+            stream_url = settings["stations"][station_name]
+            # Update the last_station to match.
+            settings["last_station"] = station_name
+            # Save our change to last_station.
+            save_settings(settings)
+        # If the name can't be found, let the user know.
+        else:
+            await ctx.send(f"Sorry, I've never heard of `{station_name}`.")
+            return
+    # If no station name was provided...
+    else:
+        # And the last_station exists and can be found in the "stations" list
+        if settings["last_station"] and settings["last_station"] in settings["stations"]:
+            # Then set the stream_url to the URL of the last_station.
+            stream_url = settings["stations"][settings["last_station"]]
+        # And last_station can't be found...
+        else:
+            # Let the user know. This might be indicative of no stations being set yet.
+            await ctx.send("Uh oh. You didn't specify a station and I can't recall the last station I played. This normally shouldn't happen, but just try specifying a station for me to play.")
+
     # Start streaming the radio. Log if the remote stream ends (normally shouldn't happen).
-    vc.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(STREAM_URL), volume=actual_volume), after=lambda e: print(f"Stream ended: {e}"))
+    vc.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(stream_url), volume=actual_volume), after=lambda e: print(f"Stream ended: {e}"))
     await ctx.send(f"Now playing the radio in {channel.name}!")
     print(f"Now playing the radio in {channel.name}.")
 
 # Load the settings JSON file and return its parsed contents.
 def load_settings():
     # Check that settings file exists.
-    if os.path.exists(SETTINGS_FILE):
+    if os.path.exists(settings_file):
         # Open the settings file in read mode and assign to f variable.
-        with open(SETTINGS_FILE, "r") as f:
+        with open(settings_file, "r") as f:
             # Parse the JSON within the file and return it.
             return json.load(f)
-    # If it doesn't exist, return some default settings.
-    return {"volume_offset": DEFAULT_VOLUME, "default_volume": DEFAULT_VOLUME_OFFSET, "current_volume": 1.0}
+    else:
+        settings = {
+            "stations": {},
+            "last_station": None,
+            "volume_offset": DEFAULT_VOLUME,
+            "default_volume": DEFAULT_VOLUME_OFFSET,
+            "current_volume": 1.0
+        }
+
+    # Check if OVERWRITE_STATIONS is set.
+    if OVERWRITE_STATIONS:
+        # If it is, put it in the stations variable.
+        try:
+            stations = json.loads(OVERWRITE_STATIONS)
+            # If this new variable contains a stations list like we expect...
+            if isInstance(stations, dict):
+                # Overwrite "stations" in settings with the new values.
+                settings["stations"] = stations
+                # Set last_station to the first station.
+                settings["last_station"] = list(stations.keys())[0]
+            # Otherwise, give an error.
+            else:
+                raise ValueError("OVERWRITE_STATIONS isn't in the correct format! Check the documentation.")
+        # If json.loads couldn't parse OVERWRITE_STATIONS, give an error.
+        except:
+            raise ValueError("OVERWRITE_STATIONS couldn't be parsed as JSON! Please make sure it is formatted correctly. Check the documentation.")
+    if not settings.get("stations"):
+        raise ValueError("No stations have been configured. Try using the OVERWRITE_STATIONS environment variable or manually editing settings.json file. Check the documentation.")
+    
+    # Return our finished settings JSON.
+    return settings
 
 # Save the current settings to the settings JSON file.
 def save_settings(settings):
     # Open the settings file in write mode and assign to f variable.
-    with open(SETTINGS_FILE, "w") as f:
+    with open(settings_file, "w") as f:
         # Dump the current settings as JSON into the settings file.
-        json.dump(settings, f)
+        json.dump(settings, f, indent=4)
 
 # Initialize the settings.
 settings = load_settings()
@@ -96,6 +148,12 @@ async def on_ready():
 async def join(ctx):
     """Joins the voice channel you're in."""
     await start_radio(ctx, True)
+
+# Define a generic switch command
+@bot.command(aliases=['play','station'])
+async def switch(ctx, station_name: str = None)
+    """Switch to the specified radio station."""
+    await start_radio(ctx, True, station_name)
 
 # --------------------
 # Volume Shenanigans
