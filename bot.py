@@ -68,7 +68,7 @@ async def start_radio(ctx, useDefaultVolume, station_name=None):
             # Set the stream_url to match the station's URL.
             stream_url = settings["stations"][found_station]
             # Update the last_station to match.
-            settings["last_station"] = found_)station
+            settings["last_station"] = found_station
             # Save our change to last_station.
             save_settings(settings)
         # If the name can't be found, let the user know and stop the function.
