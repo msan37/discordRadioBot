@@ -1,0 +1,5 @@
+services:
+  discordRadioBot:
+    image: ghcr.io/maximized490/discordradiobot:latest
+    restart: unless-stopped
+    env_file: ".env"
