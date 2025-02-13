@@ -1,11 +1,11 @@
 import discord
 import os
-from dotenv import load_dotenv # type: ignore
+from dotenv import load_dotenv # type: ignore (default in pthon library ;)
 
-load_dotenv()  # Loads settings from .env
-BOT_TOKEN = os.getenv("BOT_TOKEN")  # Ensure your .env uses the correct key
+load_dotenv()  # Test .env
+BOT_TOKEN = os.getenv("BOT_TOKEN")  # Test the key
 
-intents = discord.Intents.default()  # Use default intents
+intents = discord.Intents.default()  # Use default intents to avoid unassigned intent issues
 client = discord.Client(intents=intents)
 
 @client.event
