@@ -1,9 +1,9 @@
 import discord
 import os
-from dotenv import load_dotenv # type: ignore (default in pthon library ;)
+from dotenv import load_dotenv # type: ignore (default in python library ;)
 
 load_dotenv()  # Test .env
-BOT_TOKEN = os.getenv("BOT_TOKEN")  # Test the key
+BOT_TOKEN = os.getenv("BOT_TOKEN")  # Test the token
 
 intents = discord.Intents.default()  # Use default intents to avoid unassigned intent issues
 client = discord.Client(intents=intents)
